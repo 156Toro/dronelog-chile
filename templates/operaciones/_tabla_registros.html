@@ -1,0 +1,8 @@
+<div class="table-responsive"><table class="table align-middle mb-0">
+<thead><tr><th>Recibido</th><th>Archivo</th><th>Enviado por</th><th>Estado</th><th>Resultado</th><th></th></tr></thead>
+<tbody>{% for r in registros %}<tr>
+<td>{{ r.recibido_en|date:"d-m-Y H:i" }}</td><td class="small">{{ r.nombre_original }}</td><td>{{ r.enviado_por }}</td>
+<td>{% if r.estado == "procesado" %}<span class="badge text-bg-success">Procesado</span>{% elif r.estado == "rechazado" %}<span class="badge text-bg-danger">Rechazado</span>{% else %}<span class="badge text-bg-secondary">Recibido</span>{% endif %}</td>
+<td class="small">{% if r.estado == "procesado" %}Vuelo de {{ r.operacion.duracion_texto }} · {{ r.operacion.aeronave.nombre }}{% else %}{{ r.motivo_rechazo }}{% endif %}</td>
+<td class="text-end"><a href="{% url 'registro_detalle' r.pk %}">Ver</a></td></tr>
+{% empty %}<tr><td colspan="6" class="text-muted">Aún no se reciben registros.</td></tr>{% endfor %}</tbody></table></div>

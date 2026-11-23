@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3">Registros DJI recibidos</h1>
+<div class="btn-group">
+  <a class="btn btn-outline-secondary btn-sm {% if not request.GET.estado %}active{% endif %}" href="?">Todos</a>
+  <a class="btn btn-outline-secondary btn-sm {% if request.GET.estado == 'procesado' %}active{% endif %}" href="?estado=procesado">Procesados</a>
+  <a class="btn btn-outline-secondary btn-sm {% if request.GET.estado == 'rechazado' %}active{% endif %}" href="?estado=rechazado">Rechazados</a>
+</div></div>
+<div class="card"><div class="card-body">{% include "operaciones/_tabla_registros.html" with registros=object_list %}</div></div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3">Usuarios de {{ user.empresa }}</h1>
+<a class="btn btn-dl" href="{% url 'usuario_crear' %}"><i class="bi bi-plus"></i> Nuevo usuario</a></div>
+<div class="card"><table class="table mb-0">
+<thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Activo</th><th></th></tr></thead>
+<tbody>{% for u in object_list %}<tr><td>{{ u.get_full_name }}</td><td>{{ u.email }}</td><td>{{ u.rol }}</td><td>{{ u.is_active|yesno:"Sí,No" }}</td>
+<td class="text-end"><a href="{% url 'usuario_editar' u.pk %}">Editar</a></td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

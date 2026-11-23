@@ -1,0 +1,8 @@
+.git
+**/__pycache__
+db.sqlite3
+media
+staticfiles
+herramientas/dji-parser/target
+.coverage
+htmlcov

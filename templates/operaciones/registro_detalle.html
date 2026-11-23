@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block contenido %}
+<a href="{% url 'registros' %}" class="small">&larr; Registros DJI</a>
+<h1 class="h3 my-3">{{ object.nombre_original }}</h1>
+<div class="row g-3">
+<div class="col-lg-5"><div class="card"><div class="card-body">
+  <h2 class="h6 text-muted">Registro recibido</h2>
+  <dl class="row small mb-0">
+    <dt class="col-5">Estado</dt><dd class="col-7">{{ object.get_estado_display }}</dd>
+    {% if object.motivo_rechazo %}<dt class="col-5">Motivo</dt><dd class="col-7 text-danger">{{ object.motivo_rechazo }}</dd>{% endif %}
+    <dt class="col-5">Recibido</dt><dd class="col-7">{{ object.recibido_en|date:"d-m-Y H:i:s" }}</dd>
+    <dt class="col-5">Enviado por</dt><dd class="col-7">{{ object.enviado_por }}</dd>
+    <dt class="col-5">Versión del formato</dt><dd class="col-7">{{ object.version_formato|default:"—" }}</dd>
+    <dt class="col-5">Tamaño</dt><dd class="col-7">{{ object.tamano_bytes|filesizeformat }}</dd>
+    <dt class="col-5">Huella SHA-256</dt><dd class="col-7"><code class="small text-break">{{ object.huella_sha256 }}</code></dd>
+  </dl></div></div></div>
+{% if object.operacion %}{% with op=object.operacion %}
+<div class="col-lg-7"><div class="card"><div class="card-body">
+  <h2 class="h6 text-muted">Operación creada automáticamente</h2>
+  <dl class="row small mb-0">
+    <dt class="col-5">Inicio</dt><dd class="col-7">{{ op.inicio|date:"d-m-Y H:i:s" }}</dd>
+    <dt class="col-5">Duración</dt><dd class="col-7">{{ op.duracion_texto }}</dd>
+    <dt class="col-5">Piloto</dt><dd class="col-7">{{ op.piloto|default:"—" }}</dd>
+    <dt class="col-5">Aeronave</dt><dd class="col-7">{{ op.aeronave }} · {{ op.modelo_aeronave }}</dd>
+    <dt class="col-5">Batería</dt><dd class="col-7">{{ op.bateria|default:op.serie_bateria }} ({{ op.bateria_inicio_pct }} % → {{ op.bateria_fin_pct }} %)</dd>
+    <dt class="col-5">Altura máxima</dt><dd class="col-7">{{ op.altura_max_m }} m</dd>
+    <dt class="col-5">Distancia</dt><dd class="col-7">{{ op.distancia_m }} m</dd>
+    <dt class="col-5">Lugar</dt><dd class="col-7">{{ op.lugar|default:"—" }}</dd>
+    <dt class="col-5">Puntos de trayectoria</dt><dd class="col-7">{{ op.puntos.count }}</dd>
+  </dl>
+  {% if op.eventos.exists %}<h3 class="h6 mt-3">Avisos del vuelo</h3><ul class="small mb-0">
+  {% for e in op.eventos.all|slice:":10" %}<li>{{ e.segundo|floatformat:1 }} s · {{ e.mensaje }}</li>{% endfor %}</ul>{% endif %}
+</div></div></div>{% endwith %}{% endif %}
+</div>
+{% endblock %}

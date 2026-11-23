@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block contenido %}
+<div class="row justify-content-center"><div class="col-lg-7">
+<div class="card"><div class="card-body p-4">
+  <h1 class="h4 mb-4">{{ titulo }}</h1>
+  <form method="post" novalidate>{% csrf_token %}
+    {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+    {% for campo in form %}
+      <div class="mb-3">
+        {% if campo.field.widget.input_type == "checkbox" %}
+          <div class="form-check">{{ campo }} <label class="form-check-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label></div>
+        {% else %}
+          <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+          {{ campo }}
+        {% endif %}
+        {% if campo.help_text %}<div class="form-text">{{ campo.help_text }}</div>{% endif %}
+        {% for e in campo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+      </div>
+    {% endfor %}
+    <button class="btn btn-dl">Guardar</button>
+    <a class="btn btn-link" href="javascript:history.back()">Cancelar</a>
+  </form>
+</div></div></div></div>
+<script>document.querySelectorAll("form input:not([type=checkbox]), form select, form textarea").forEach(e => e.classList.add("form-control"));</script>
+{% endblock %}

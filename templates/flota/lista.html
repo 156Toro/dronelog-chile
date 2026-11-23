@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% load dronelog %}
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3">{{ titulo_lista }}</h1>
+<a class="btn btn-dl" href="{% url url_base|add:'_crear' %}"><i class="bi bi-plus"></i> Registrar {{ nombre|lower }}</a></div>
+<div class="card"><table class="table mb-0">
+<thead><tr>{% for c, t in columnas %}<th>{{ t }}</th>{% endfor %}<th></th></tr></thead>
+<tbody>{% for o in object_list %}<tr>{% for c, t in columnas %}<td>{{ o|campo:c }}</td>{% endfor %}
+<td class="text-end"><a href="{% url url_base|add:'_editar' o.pk %}">Editar</a></td></tr>
+{% empty %}<tr><td colspan="{{ columnas|length|add:1 }}" class="text-muted">Aún no hay registros.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

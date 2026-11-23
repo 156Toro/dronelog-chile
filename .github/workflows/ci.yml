@@ -1,0 +1,47 @@
+# Ambiente de pruebas: corre en cada push y pull request
+name: Pruebas
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: dronelog
+          POSTGRES_PASSWORD: dronelog
+          POSTGRES_DB: dronelog
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DJANGO_SETTINGS_MODULE: dronelog.settings.pruebas
+      DATABASE_URL: postgres://dronelog:dronelog@localhost:5432/dronelog
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Compilar lector DJI
+        run: cargo build --release --manifest-path herramientas/dji-parser/Cargo.toml
+      - name: Instalar dependencias
+        run: pip install -r requirements-dev.txt
+      - name: Revisar migraciones y configuración
+        run: |
+          python manage.py makemigrations --check --dry-run
+          python manage.py check
+      - name: Pruebas unitarias y de integración
+        run: coverage run manage.py test pruebas -v 2
+      - name: Cobertura
+        run: |
+          coverage report
+          coverage html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cobertura
+          path: htmlcov/
