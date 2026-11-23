@@ -1,0 +1,26 @@
+# Blueprint de Render: ambiente de producción de DroneLog Chile
+services:
+  - type: web
+    name: dronelog-chile
+    runtime: docker
+    plan: free
+    branch: main
+    healthCheckPath: /salud/
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: dronelog-chile.onrender.com
+      - key: DJI_API_KEY
+        sync: false        # se ingresa a mano en el panel de Render; nunca va en el repositorio
+      - key: DRONELOG_DEMO_PASSWORD
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: dronelog-db
+          property: connectionString
+
+databases:
+  - name: dronelog-db
+    plan: free
+    databaseName: dronelog

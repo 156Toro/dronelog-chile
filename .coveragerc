@@ -1,0 +1,3 @@
+[run]
+source = cuentas,flota,operaciones,dronelog
+omit = */migrations/*,*/settings/produccion.py,dronelog/asgi.py,dronelog/wsgi.py,*/management/*

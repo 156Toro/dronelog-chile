@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block contenido %}
+<h1 class="h3 mb-3">Cliente de sincronización</h1>
+<div class="card"><div class="card-body">
+<p>El cliente de sincronización del control DJI envía cada registro de vuelo a DroneLog al terminar el vuelo. Configúrelo con estos datos:</p>
+<dl class="row">
+  <dt class="col-sm-3">Dirección de la API</dt><dd class="col-sm-9"><code>{{ request.scheme }}://{{ request.get_host }}/api/v1/registros/</code></dd>
+  <dt class="col-sm-3">Token</dt><dd class="col-sm-9"><code>{{ token.key }}</code></dd>
+</dl>
+<pre class="bg-light p-3 small">python cliente_sync/sync.py --api {{ request.scheme }}://{{ request.get_host }} --token {{ token.key }} --carpeta "RUTA/DJI/FlightRecord"</pre>
+<form method="post">{% csrf_token %}<button class="btn btn-outline-danger btn-sm">Generar un token nuevo</button></form>
+</div></div>
+{% endblock %}

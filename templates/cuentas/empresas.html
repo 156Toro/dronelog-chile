@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3">Empresas</h1>
+<a class="btn btn-dl" href="{% url 'empresa_crear' %}"><i class="bi bi-plus"></i> Nueva empresa</a></div>
+<div class="card"><table class="table mb-0">
+<thead><tr><th>Empresa</th><th>RUT</th><th>Usuarios</th><th>Operaciones</th><th>Activa</th></tr></thead>
+<tbody>{% for e in object_list %}<tr><td>{{ e.nombre }}</td><td>{{ e.rut }}</td><td>{{ e.n_usuarios }}</td><td>{{ e.n_operaciones }}</td><td>{{ e.activa|yesno:"Sí,No" }}</td></tr>
+{% empty %}<tr><td colspan="5" class="text-muted">No hay empresas.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}
