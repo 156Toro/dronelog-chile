@@ -13,7 +13,10 @@ from flota.models import Aeronave, Bateria, Piloto
 from operaciones.ingesta import procesar_registro
 from operaciones.models import RegistroVuelo
 
-DEMO = Path(__file__).resolve().parents[2] / "datos_demo" / "vuelo_mavic3.json"
+DATOS = Path(__file__).resolve().parents[2] / "datos_demo"
+# Vuelos reales de prueba (DJI Mavic 3, 24-10-2026), ya descifrados por dji-parser
+VUELOS = [("vuelo_mavic3.json", "DJIFlightRecord_2026-10-24_[00-13-20].txt"),
+          ("vuelo_mavic3_b.json", "DJIFlightRecord_2026-10-24_[00-21-52].txt")]
 
 
 class Command(BaseCommand):
@@ -49,11 +52,13 @@ class Command(BaseCommand):
             "empresa": vig, "nombre": "Mavic 3 T01", "modelo": "DJI Mavic 3"})
         Bateria.objects.get_or_create(numero_serie="4ERPJBSDA055RA", defaults={"empresa": vig, "aeronave": nave})
 
-        datos = json.loads(DEMO.read_text(encoding="utf-8"))
-        huella = "demo-" + "0" * 59
-        if not RegistroVuelo.objects.filter(empresa=vig, huella_sha256=huella).exists():
-            registro = RegistroVuelo(empresa=vig, enviado_por=piloto_u, nombre_original="DJIFlightRecord_2026-10-24_[00-13-20].txt",
-                                     tamano_bytes=DEMO.stat().st_size, huella_sha256=huella)
-            registro.archivo.save("demo.txt", ContentFile(b"registro de demostracion"), save=True)
-            procesar_registro(registro, lector=lambda ruta: datos)
+        for i, (fuente, nombre) in enumerate(VUELOS, start=1):
+            huella = f"demo{i}".ljust(64, "0")
+            if RegistroVuelo.objects.filter(empresa=vig, huella_sha256=huella).exists():
+                continue
+            datos = json.loads((DATOS / fuente).read_text(encoding="utf-8"))
+            registro = RegistroVuelo(empresa=vig, enviado_por=piloto_u, nombre_original=nombre,
+                                     tamano_bytes=(DATOS / fuente).stat().st_size, huella_sha256=huella)
+            registro.archivo.save(f"demo{i}.txt", ContentFile(b"registro de demostracion"), save=True)
+            procesar_registro(registro, lector=lambda ruta, d=datos: d)
         self.stdout.write(self.style.SUCCESS(f"Datos de demostración listos. Contraseña de los usuarios: {clave}"))
