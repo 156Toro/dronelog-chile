@@ -61,7 +61,7 @@ coverage report
 5. Verifica `https://dronelog-chile.onrender.com/salud/`; debe responder `{"estado": "ok", "version": "0.5.0"}`.
 
 Al iniciar, el contenedor aplica las migraciones y carga los datos de demostración (idempotente).
-Si Render asigna otra URL, actualiza `DJANGO_ALLOWED_HOSTS` con ese dominio.
+Si el nombre `dronelog-chile` ya está ocupado, Render asigna uno parecido (por ejemplo `dronelog-chile-xxxx.onrender.com`); la aplicación lo acepta sola mediante la variable `RENDER_EXTERNAL_HOSTNAME`. Para usar un dominio propio, agrégalo en Settings → Custom Domains y en `DJANGO_ALLOWED_HOSTS`.
 
 Limitaciones del plan gratuito (aceptables para un prototipo): el servicio se suspende tras 15 minutos sin
 uso y tarda cerca de un minuto en despertar, y la base gratuita vence a los 30 días.
